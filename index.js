@@ -173,6 +173,109 @@ function calculateStrength(password, options) {
   return Math.min(100, score);
 }
 
+const learningModules = [
+  {
+    title: 'Use a longer password',
+    description: 'Longer passwords are harder to guess and crack. Aim for at least 12 characters when possible.',
+    question: 'Which password is the best choice for strength?',
+    explanation: 'Longer passphrases with mixed characters are more secure than short or predictable ones.',
+    choices: [
+      { text: 'P@ssw0rd123', correct: false },
+      { text: 'correcthorsebatteryStaple!', correct: true },
+      { text: 'abc123ABC!', correct: false }
+    ]
+  },
+  {
+    title: 'Include a mix of characters',
+    description: 'A strong password should combine uppercase, lowercase, numbers, and symbols to increase entropy.',
+    question: 'What makes a password much harder to crack?',
+    explanation: 'Passwords that use a variety of character types are less vulnerable to guessing and brute-force attacks.',
+    choices: [
+      { text: 'Only letters', correct: false },
+      { text: 'Letters, numbers, and symbols', correct: true },
+      { text: 'Only numbers', correct: false }
+    ]
+  },
+  {
+    title: 'Avoid reuse across accounts',
+    description: 'Using the same password on multiple services increases risk if one site is breached.',
+    question: 'Why should you avoid password reuse?',
+    explanation: 'If one service is compromised, reused passwords allow attackers to access other accounts too.',
+    choices: [
+      { text: 'It is easier to remember', correct: false },
+      { text: 'A breach on one site can expose all accounts', correct: true },
+      { text: 'Passwords become stronger over time', correct: false }
+    ]
+  }
+];
+
+function renderLearningModules() {
+  const container = document.getElementById('learningModules');
+  container.innerHTML = '';
+
+  learningModules.forEach((module, moduleIndex) => {
+    const card = document.createElement('article');
+    card.className = 'module-card';
+
+    const title = document.createElement('h3');
+    title.textContent = module.title;
+
+    const description = document.createElement('p');
+    description.textContent = module.description;
+
+    const question = document.createElement('div');
+    question.className = 'module-question';
+    question.textContent = module.question;
+
+    const actions = document.createElement('div');
+    actions.className = 'module-actions';
+
+    module.choices.forEach((choice, choiceIndex) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'module-button';
+      button.textContent = choice.text;
+      button.addEventListener('click', () => handleModuleAnswer(moduleIndex, choiceIndex, card));
+      actions.appendChild(button);
+    });
+
+    card.appendChild(title);
+    card.appendChild(description);
+    card.appendChild(question);
+    card.appendChild(actions);
+    container.appendChild(card);
+  });
+}
+
+function handleModuleAnswer(moduleIndex, choiceIndex, card) {
+  const module = learningModules[moduleIndex];
+  const selected = module.choices[choiceIndex];
+  const buttons = card.querySelectorAll('.module-button');
+
+  buttons.forEach((button, index) => {
+    button.disabled = true;
+    if (index === choiceIndex) {
+      button.classList.add(selected.correct ? 'correct' : 'incorrect');
+    }
+  });
+
+  const existingFeedback = card.querySelector('.module-feedback');
+  if (existingFeedback) existingFeedback.remove();
+
+  const feedback = document.createElement('div');
+  feedback.className = `module-feedback ${selected.correct ? 'correct' : 'incorrect'}`;
+
+  if (selected.correct) {
+    feedback.textContent = 'Great choice! That option uses a strong, memorable phrase with high entropy.';
+  } else {
+    const correctAnswer = module.choices.find((choice) => choice.correct)?.text || 'the best answer';
+    feedback.innerHTML = `Incorrect. The correct answer is <strong>${correctAnswer}</strong>.<br>${module.explanation}`;
+  }
+
+  card.appendChild(feedback);
+}
+
+renderLearningModules();
 // Initialize with a default generated password
 updateStrength('');
 updateCheckerStrength();
