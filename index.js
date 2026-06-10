@@ -235,6 +235,17 @@ const learningModules = [
       { text: 'A breach on one site can expose all accounts', correct: true },
       { text: 'Passwords become stronger over time', correct: false }
     ]
+  },
+  {
+    title: 'Protect against brute-force attacks',
+    description: 'Brute-force attacks try many password combinations until one works. Strong passwords slow down or stop this attack.',
+    question: 'What makes a password more resistant to brute-force attacks?',
+    explanation: 'Longer passwords with mixed character types increase the number of possible combinations and make brute-force attacks much harder.',
+    choices: [
+      { text: 'Short passwords with common words', correct: false },
+      { text: 'Longer passwords with uppercase, lowercase, numbers, and symbols', correct: true },
+      { text: 'Using only the account name', correct: false }
+    ]
   }
 ];
 
