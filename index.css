@@ -196,6 +196,31 @@ header p {
   background: rgba(148, 163, 184, 0.12);
 }
 
+.suggestions-panel {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 1rem;
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--text);
+}
+
+.suggestions-panel ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.suggestions-panel li {
+  line-height: 1.5;
+}
+
+.suggestions-panel .suggestions-strong {
+  margin: 0;
+  font-weight: 600;
+}
+
 .strength-bar {
   flex: 1 1 100%;
   min-height: 0.75rem;

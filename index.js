@@ -15,6 +15,7 @@ const checkerToggle = document.getElementById('checkerToggleVisibility');
 const checkerStrengthLabel = document.getElementById('checkerStrengthLabel');
 const checkerStrengthBar = document.getElementById('checkerStrengthBar');
 const checkerStrengthPanel = document.getElementById('checkerStrengthPanel');
+const checkerSuggestions = document.getElementById('checkerSuggestions');
 let checkerVisible = false;
 
 const CHAR_SETS = {
@@ -113,17 +114,16 @@ function shuffleArray(array) {
 }
 
 function updateStrength(password) {
-  const options = getOptions();
   const text = password || output.value;
-  const score = calculateStrength(text, options);
+  const score = calculateStrength(text);
   applyStrengthVisual(generatorStrengthPanel, strengthLabel, strengthBar, score, text);
 }
 
 function updateCheckerStrength() {
   const text = checkerInput.value;
-  const options = getPasswordOptions(text);
-  const score = calculateStrength(text, options);
+  const score = calculateStrength(text);
   applyStrengthVisual(checkerStrengthPanel, checkerStrengthLabel, checkerStrengthBar, score, text);
+  renderCheckerSuggestions(text, getStrengthSuggestions(text));
 }
 
 function applyStrengthVisual(panel, labelElement, barElement, score, text) {
@@ -150,27 +150,56 @@ function applyStrengthVisual(panel, labelElement, barElement, score, text) {
   fill.style.background = !text ? 'transparent' : score < 35 ? 'linear-gradient(90deg, var(--danger), #fca5a5)' : score < 70 ? 'linear-gradient(90deg, var(--warning), #fcd34d)' : 'linear-gradient(90deg, var(--success), var(--accent))';
 }
 
-function getPasswordOptions(password) {
-  return {
-    upper: /[A-Z]/.test(password),
-    lower: /[a-z]/.test(password),
-    number: /[0-9]/.test(password),
-    symbol: /[^A-Za-z0-9]/.test(password)
-  };
+function calculateStrength(password) {
+  if (!password) return 0;
+
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasSymbol = /[^A-Za-z0-9]/.test(password);
+  const lengthValid = password.length >= 8 && password.length <= 32;
+
+  return [hasUpper, hasLower, hasNumber, hasSymbol, lengthValid].filter(Boolean).length * 20;
 }
 
-function calculateStrength(password, options) {
-  if (!password) return 0;
-  let score = 0;
-  const length = password.length;
-  score += Math.min(40, length * 2);
-  const variety = [options.upper, options.lower, options.number, options.symbol].filter(Boolean).length;
-  score += variety * 15;
-  if (/[A-Z]/.test(password)) score += 5;
-  if (/[a-z]/.test(password)) score += 5;
-  if (/[0-9]/.test(password)) score += 5;
-  if (/[^A-Za-z0-9]/.test(password)) score += 5;
-  return Math.min(100, score);
+function getStrengthSuggestions(password) {
+  if (!password) return [];
+
+  const suggestions = [];
+  if (!/[A-Z]/.test(password)) suggestions.push('Add at least one uppercase letter.');
+  if (!/[a-z]/.test(password)) suggestions.push('Add at least one lowercase letter.');
+  if (!/[0-9]/.test(password)) suggestions.push('Add at least one number.');
+  if (!/[^A-Za-z0-9]/.test(password)) suggestions.push('Add at least one symbol (for example: !@#$%).');
+  if (password.length < 8) suggestions.push('Use at least 8 characters for a stronger password.');
+  if (password.length > 32) suggestions.push('Use no more than 32 characters to match the checker range.');
+
+  return suggestions;
+}
+
+function renderCheckerSuggestions(password, suggestions) {
+  if (!checkerSuggestions) return;
+  checkerSuggestions.innerHTML = '';
+
+  if (!password) {
+    checkerSuggestions.textContent = '';
+    return;
+  }
+
+  if (suggestions.length === 0) {
+    const message = document.createElement('p');
+    message.className = 'suggestions-strong';
+    message.textContent = 'Great! Your password meets all checklist criteria.';
+    checkerSuggestions.appendChild(message);
+    return;
+  }
+
+  const list = document.createElement('ul');
+  suggestions.forEach((suggestion) => {
+    const item = document.createElement('li');
+    item.textContent = suggestion;
+    list.appendChild(item);
+  });
+  checkerSuggestions.appendChild(list);
 }
 
 const learningModules = [
