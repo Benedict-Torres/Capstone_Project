@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Password Generator</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <header>
+        <h1>Password Generator</h1>
+        <p>Create strong passwords and learn secure password habits.</p>
+      </header>
+
+      <div class="output-panel">
+        <input id="passwordOutput" type="text" readonly placeholder="Your secure password appears here" />
+        <button id="copyButton" type="button">Copy</button>
+      </div>
+
+      <div class="controls">
+        <div class="control-group range-group">
+          <label for="lengthRange">Length: <span id="lengthValue">16</span></label>
+          <input id="lengthRange" type="range" min="8" max="32" value="16" />
+        </div>
+
+        <div class="control-group checkbox-group">
+          <label><input id="includeUpper" type="checkbox" checked /> Uppercase</label>
+          <label><input id="includeLower" type="checkbox" checked /> Lowercase</label>
+          <label><input id="includeNumbers" type="checkbox" checked /> Numbers</label>
+          <label><input id="includeSymbols" type="checkbox" checked /> Symbols</label>
+        </div>
+
+        <div id="generatorStrengthPanel" class="strength-panel">
+          <span>Password strength:</span>
+          <strong id="strengthLabel">Strong</strong>
+          <div id="strengthBar" class="strength-bar"></div>
+        </div>
+
+        <button id="generateButton" class="primary-button" type="button">Generate Password</button>
+      </div>
+    </section>
+
+    <section class="card checker-card">
+      <header>
+        <h2>Password Strength Checker</h2>
+        <p>Paste any password below to evaluate its strength using the same criteria as the generator.</p>
+      </header>
+
+      <div class="controls">
+        <div class="control-group checker-input-group">
+          <div class="checker-input-header">
+            <label for="passwordCheckerInput">Enter password</label>
+            <button id="checkerToggleVisibility" class="toggle-button" type="button" aria-pressed="false">Show</button>
+          </div>
+          <textarea id="passwordCheckerInput" rows="4" class="password-hidden" placeholder="Type or paste a password to check its strength"></textarea>
+        </div>
+
+        <div id="checkerStrengthPanel" class="strength-panel">
+          <span>Checker strength:</span>
+          <strong id="checkerStrengthLabel">None</strong>
+          <div id="checkerStrengthBar" class="strength-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card learning-card">
+      <header>
+        <h2>Interactive Password Practice</h2>
+        <p>Read secure password habits and answer a quick question for each module.</p>
+      </header>
+
+      <div id="learningModules" class="learning-modules"></div>
+    </section>
+  </main>
+
+  <script src="index.js"></script>
+</body>
+</html>
